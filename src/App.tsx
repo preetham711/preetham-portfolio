@@ -18,7 +18,7 @@ const customPortfolioData: PortfolioPageProps = {
   ],
   resume: {
     label: "Resume",
-    onClick: () => window.open("/resume/preetham fn.pdf", "_blank"),
+    onClick: () => window.open("/resume.pdf", "_blank"),
   },
   hero: {
     titleLine1: "UI/UX Designer &",
@@ -45,7 +45,7 @@ const customPortfolioData: PortfolioPageProps = {
       tags: ["Mobile App", "UI/UX", "Figma"],
       imageContent: (
         <img
-          src="assets/01.png"
+          src="/assets/01.png"
           alt="PlayMate App"
           className="w-full h-full object-cover rounded-lg"
         />
@@ -73,7 +73,7 @@ const customPortfolioData: PortfolioPageProps = {
       tags: ["Dashboard", "Mobile App", "System UI"],
       imageContent: (
         <img
-          src="assets/03.png"
+          src="/assets/03.png"
           alt="Apartment App"
           className="w-full h-full object-cover rounded-lg"
         />
@@ -87,7 +87,7 @@ const customPortfolioData: PortfolioPageProps = {
       tags: ["E-Commerce", "Mobile UI", "UX Flow"],
       imageContent: (
         <img
-          src="assets/04.png"
+          src="/assets/04.png"
           alt="Tyre App"
           className="w-full h-full object-cover rounded-lg"
         />
