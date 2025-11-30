@@ -1,5 +1,12 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 interface NavLink {
   label: string;
@@ -8,7 +15,10 @@ interface NavLink {
 interface Project {
   title: string;
   description: string;
+  fullDescription: string;
   tags: string[];
+  images: string[];
+  behanceUrl: string;
   imageContent?: React.ReactNode;
   onClick?: () => void;
 }
@@ -29,6 +39,7 @@ export interface PortfolioPageProps {
   ctaButtons?: {
     primary: { label: string; onClick?: () => void };
     secondary: { label: string; onClick?: () => void };
+    tertiary?: { label: string; onClick?: () => void };
   };
   projects?: Project[];
   stats?: Stat[];
@@ -118,24 +129,44 @@ const defaultData: Required<PortfolioPageProps> = {
   ctaButtons: {
     primary: { label: "View My Work", onClick: () => {} },
     secondary: { label: "Get In Touch", onClick: () => {} },
+    tertiary: {
+      label: "View Design",
+      onClick: () =>
+        window.open(
+          "https://www.figma.com/design/U8RHx87I6RFIWD5zBNCMmi/Untitled?node-id=1-3&p=f&t=UgONNzmnhi91UgWd-0",
+          "_blank"
+        ),
+    },
   },
   projects: [
     {
       title: "FinTech Mobile App",
       description: "React Native app with AI-powered financial insights.",
+      fullDescription:
+        "This innovative FinTech mobile app leverages React Native and Node.js to provide users with AI-powered financial insights. It features real-time data analysis, personalized investment recommendations, and secure transaction processing. The app includes interactive charts, budget tracking, and seamless integration with banking APIs.",
       tags: ["React Native", "Node.js"],
+      images: ["/assets/01.png", "/assets/02.png"],
+      behanceUrl: "https://behance.net/fintech-app",
       imageContent: undefined,
     },
     {
       title: "Data Visualization Platform",
       description: "Interactive dashboard for complex data analysis.",
+      fullDescription:
+        "A comprehensive data visualization platform built with D3.js and Python. This tool allows users to create interactive dashboards for complex data analysis, featuring advanced charting capabilities, real-time data streaming, and customizable visualizations. It supports multiple data sources and provides export functionality for reports.",
       tags: ["D3.js", "Python"],
+      images: ["/assets/03.png", "/assets/04.png"],
+      behanceUrl: "https://behance.net/data-viz-platform",
       imageContent: undefined,
     },
     {
       title: "3D Portfolio Site",
       description: "Immersive WebGL experience with 3D elements.",
+      fullDescription:
+        "An immersive 3D portfolio website created using Three.js and WebGL. This project showcases interactive 3D models, particle systems, and smooth animations. It features a custom shader for realistic lighting effects and optimized performance for various devices, providing an engaging user experience.",
       tags: ["Three.js", "WebGL"],
+      images: ["/assets/portfolio-3d/011.png"],
+      behanceUrl: "https://behance.net/3d-portfolio",
       imageContent: undefined,
     },
   ],
@@ -157,6 +188,14 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
   stats = defaultData.stats,
   showAnimatedBackground = true,
 }) => {
+  const { primary, secondary, tertiary } = ctaButtons;
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleProjectClick = (project: Project) => {
+    setSelectedProject(project);
+    setIsDialogOpen(true);
+  };
   return (
     <div className="bg-background text-foreground geist-font">
       {showAnimatedBackground && <AuroraBackground />}
@@ -184,12 +223,14 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                 </a>
               ))}
             </div>
-            <button
-              onClick={resume.onClick}
+            <a
+              href="/resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
               className="glass-button px-4 py-2 rounded-lg text-foreground text-sm font-medium inter-font"
             >
               {resume.label}
-            </button>
+            </a>
           </div>
         </nav>
         <div className="divider" />
@@ -211,17 +252,25 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
             </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
               <button
-                onClick={ctaButtons.primary.onClick}
+                onClick={primary.onClick}
                 className="primary-button px-6 py-3 text-foreground rounded-lg font-medium text-sm min-w-[160px]"
               >
-                {ctaButtons.primary.label}
+                {primary.label}
               </button>
               <button
-                onClick={ctaButtons.secondary.onClick}
+                onClick={secondary.onClick}
                 className="glass-button min-w-[160px] inter-font text-sm font-medium text-foreground rounded-lg px-6 py-3"
               >
-                {ctaButtons.secondary.label}
+                {secondary.label}
               </button>
+              {tertiary && (
+                <button
+                  onClick={tertiary.onClick}
+                  className="glass-button min-w-[160px] inter-font text-sm font-medium text-foreground rounded-lg px-6 py-3"
+                >
+                  {tertiary.label}
+                </button>
+              )}
             </div>
             <div className="divider mb-16" />
             <div
@@ -232,7 +281,7 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
                 <div
                   key={index}
                   className="glass-card rounded-2xl p-6 text-left cursor-pointer"
-                  onClick={project.onClick}
+                  onClick={() => handleProjectClick(project)}
                 >
                   <div className="project-image rounded-xl h-32 mb-4 flex items-center justify-center">
                     {project.imageContent}
@@ -279,6 +328,72 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({
             </div>
           </div>
         </main>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+            {selectedProject && (
+              <>
+                <DialogHeader>
+                  <DialogTitle className="text-2xl font-bold">
+                    {selectedProject.title}
+                  </DialogTitle>
+                  <DialogDescription className="text-base">
+                    {selectedProject.description}
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="mt-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    {selectedProject.images.map((image, index) => (
+                      <img
+                        key={index}
+                        src={image}
+                        alt={`${selectedProject.title} screenshot ${index + 1}`}
+                        className="w-full h-48 object-cover rounded-lg"
+                      />
+                    ))}
+                  </div>
+                  <p className="text-muted-foreground mb-6">
+                    {selectedProject.fullDescription}
+                  </p>
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {selectedProject.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="skill-badge px-3 py-1 rounded-full text-sm text-muted-foreground"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex justify-end">
+                    <button
+                      onClick={() =>
+                        window.open(selectedProject.behanceUrl, "_blank")
+                      }
+                      className="glass-button px-4 py-2 rounded-lg text-foreground text-sm font-medium flex items-center gap-2"
+                    >
+                      <span>
+                        {selectedProject.behanceUrl.includes("behance.net")
+                          ? "Behance"
+                          : "View Website"}
+                      </span>
+                      {selectedProject.behanceUrl.includes("behance.net") && (
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          className="w-4 h-4"
+                        >
+                          <path d="M22 7h-7v-2h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.441 5.563-5.441 3.072 0 4.995 1.462 5.436 3.635l-1.635.295c-.343-.964-1.231-1.58-3.8-1.58-2.313 0-3.666 1.034-3.666 3.639 0 2.337 1.261 3.689 3.979 3.689 2.668 0 3.544-1.376 3.851-2.662l1.611.305zm-7.072-6.294c-1.711 0-2.949 1.029-2.949 2.748 0 1.675 1.264 2.737 2.949 2.737 1.711 0 2.949-1.029 2.949-2.748 0-1.675-1.264-2.737-2.949-2.737z" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
