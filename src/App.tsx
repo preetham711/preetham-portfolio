@@ -36,14 +36,6 @@ const customPortfolioData: PortfolioPageProps = {
       onClick: () =>
         (window.location.href = "mailto:preethampriyatharson07@gmail.com"),
     },
-    tertiary: {
-      label: "View Design",
-      onClick: () =>
-        window.open(
-          "https://www.figma.com/design/U8RHx87I6RFIWD5zBNCMmi/Untitled?node-id=1-3&p=f&t=UgONNzmnhi91UgWd-0",
-          "_blank"
-        ),
-    },
   },
   projects: [
     {
