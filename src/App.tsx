@@ -115,7 +115,7 @@ const customPortfolioData: PortfolioPageProps = {
   stats: [
     { value: "3+", label: "Client & Personal Projects" },
     { value: "2+", label: "Live Industry Projects" },
-    { value: "0+", label: "Years Experience" },
+    { value: "1+", label: "Years Experience" },
   ],
 
   showAnimatedBackground: true,
